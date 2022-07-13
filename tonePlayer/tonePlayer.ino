@@ -234,7 +234,7 @@ void loop() {
   playNote(B4, .25, .25);
   playNote(D5, 1, 0);
 
-  exit(69);
+  exit(1);
 }
 
 void playNote(float freq, float divBeat, float divPause) {
