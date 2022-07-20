@@ -3,7 +3,7 @@
 You need to pinMode(PIN_NUMBER, OUTPUT); to use the thing
 */
 
-// Pins
+// LEDs
 #define BLUE_LED 13
 
 #define RED_LED_1 1
@@ -14,16 +14,81 @@ You need to pinMode(PIN_NUMBER, OUTPUT); to use the thing
 #define YELLOW_LED_2 6
 #define GREEN_LED_2 7
 
+// Buttons
+#define BUTTON_1 12
+
+// Constants
+#define LOOP_LENGTH 6000
+
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(9600);
   //pinMode(LED_BUILTIN, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
   pinMode(RED_LED_1, OUTPUT);
   pinMode(YELLOW_LED_1, OUTPUT);
   pinMode(GREEN_LED_1, OUTPUT);
+  pinMode(RED_LED_2, OUTPUT);
+  pinMode(YELLOW_LED_2, OUTPUT);
+  pinMode(GREEN_LED_2, OUTPUT);
+  pinMode(BUTTON_1, INPUT);
+
+  
 }
 
+int lastTimeCheck = 0;
+int totalTimeSinceLastSecond = 0;
 void loop() {
+  totalTimeSinceLastSecond = totalTimeSinceLastSecond + (millis() - lastTimeCheck);
+  lastTimeCheck = millis();
+  if (totalTimeSinceLastSecond > LOOP_LENGTH) {
+    everyLoop();
+    totalTimeSinceLastSecond = 0;
+  }
+
+  //set_pin(GREEN_LED_1, getButtonState(BUTTON_1));
+  bool isButtonOn = false;
+  if (getButtonState(BUTTON_1) && !isButtonOn) {
+    digitalWrite(13, LOW);
+    set_pin(GREEN_LED_1, true);
+    isButtonOn = true;
+  } if (!getButtonState(BUTTON_1) && isButtonOn) {
+    set_pin(GREEN_LED_1, false);
+    digitalWrite(13, HIGH);
+    isButtonOn = false;
+  }
+
+  bool hasRed = false;
+  bool hasYellow = false;
+  bool hasGreen = false;
+  if (totalTimeSinceLastSecond < 2000 && !hasRed) {
+    hasRed = true;
+    set_pin(RED_LED_2, true);
+    return;
+  }
+
+  if (totalTimeSinceLastSecond < 4000 && !hasYellow) {
+    hasYellow = true;
+    set_pin(RED_LED_2, false);
+    set_pin(YELLOW_LED_2, true);
+    return;
+  }
+
+  if (totalTimeSinceLastSecond < 6000 && !hasGreen) {
+    hasGreen = true;
+    set_pin(YELLOW_LED_2, false);
+    set_pin(GREEN_LED_2, true);
+    return;
+  }
+
+  if (totalTimeSinceLastSecond < 7990) {
+    hasGreen = true;
+    set_pin(GREEN_LED_2, false);
+    return;
+  }
+  return;
+  
+  
   // put your main code here, to run repeatedly:
   set_pin(GREEN_LED_1, true);
   set_pin(RED_LED_2, true);
@@ -43,6 +108,20 @@ void loop() {
   set_pin(RED_LED_2, true);
   wait_seconds(1);
   set_pin(RED_LED_1, false);
+}
+
+//void printt(string e) {
+//  Serial.println(e);
+//}
+
+void printt(int e) {
+  Serial.println(e);
+}
+
+void everyLoop() {
+//  set_pin(RED_LED_1, true);
+//  delay(200);
+//  set_pin(RED_LED_1, false);
 }
 
 /*
@@ -69,6 +148,30 @@ void set_pin(int pin, boolean toggle) {
 
 void wait_seconds(int seconds) {
   delay(1000 * seconds);
+}
+
+int last = 0;
+int cState = 0;
+int inARow = 0;
+int zerosInARow = 0;
+bool getButtonState(int pin) {
+  int state = digitalRead(pin);
+//  if (state == HIGH) {
+//    inARow += 1;
+//    if (inARow > 10000) {
+//      return true;
+//    }
+//  } else {
+//    inARow = 0;
+//    return false;
+//  }
+//  return false;
+//  
+  printt(state);
+  if (state == HIGH) {
+    return true;
+  }
+  return false;
 }
 
 
