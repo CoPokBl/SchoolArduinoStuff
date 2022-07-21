@@ -15,7 +15,7 @@ You need to pinMode(PIN_NUMBER, OUTPUT); to use the thing
 #define GREEN_LED_2 7
 
 // Buttons
-#define BUTTON_1 12
+#define BUTTON_1 4
 
 // Constants
 #define LOOP_LENGTH 6000
@@ -24,21 +24,28 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   //pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(BLUE_LED, OUTPUT);
-  pinMode(RED_LED_1, OUTPUT);
-  pinMode(YELLOW_LED_1, OUTPUT);
-  pinMode(GREEN_LED_1, OUTPUT);
-  pinMode(RED_LED_2, OUTPUT);
-  pinMode(YELLOW_LED_2, OUTPUT);
-  pinMode(GREEN_LED_2, OUTPUT);
+//  pinMode(BLUE_LED, OUTPUT);
+//  pinMode(RED_LED_1, OUTPUT);
+//  pinMode(YELLOW_LED_1, OUTPUT);
+pinMode(GREEN_LED_1, OUTPUT);
+//  pinMode(RED_LED_2, OUTPUT);
+//  pinMode(YELLOW_LED_2, OUTPUT);
+//  pinMode(GREEN_LED_2, OUTPUT);
   pinMode(BUTTON_1, INPUT);
-
-  
 }
 
 int lastTimeCheck = 0;
 int totalTimeSinceLastSecond = 0;
 void loop() {
+//  int state = digitalRead(BUTTON_1);
+//  Serial.println(state);
+//  if (state == HIGH) {
+//    set_pin(BLUE_LED, true);
+//  } else {
+//    set_pin(BLUE_LED , false);
+//  }
+//  delay(500);
+//  return;
   totalTimeSinceLastSecond = totalTimeSinceLastSecond + (millis() - lastTimeCheck);
   lastTimeCheck = millis();
   if (totalTimeSinceLastSecond > LOOP_LENGTH) {
@@ -48,11 +55,12 @@ void loop() {
 
   //set_pin(GREEN_LED_1, getButtonState(BUTTON_1));
   bool isButtonOn = false;
-  if (getButtonState(BUTTON_1) && !isButtonOn) {
+  bool buttonState = getButtonState(BUTTON_1);
+  if (buttonState && !isButtonOn) {
     digitalWrite(13, LOW);
     set_pin(GREEN_LED_1, true);
     isButtonOn = true;
-  } if (!getButtonState(BUTTON_1) && isButtonOn) {
+  } if (!buttonState && isButtonOn) {
     set_pin(GREEN_LED_1, false);
     digitalWrite(13, HIGH);
     isButtonOn = false;
@@ -64,6 +72,7 @@ void loop() {
   if (totalTimeSinceLastSecond < 2000 && !hasRed) {
     hasRed = true;
     set_pin(RED_LED_2, true);
+    set_pin(GREEN_LED_2, false);
     return;
   }
 
@@ -167,7 +176,8 @@ bool getButtonState(int pin) {
 //  }
 //  return false;
 //  
-  printt(state);
+  Serial.println(state);
+  delay(1000);
   if (state == HIGH) {
     return true;
   }
