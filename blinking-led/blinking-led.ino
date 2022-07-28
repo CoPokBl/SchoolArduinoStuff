@@ -66,32 +66,26 @@ void loop() {
     isButtonOn = false;
   }
 
-  bool hasRed = false;
-  bool hasYellow = false;
-  bool hasGreen = false;
-  if (totalTimeSinceLastSecond < 2000 && !hasRed) {
-    hasRed = true;
+
+  if (totalTimeSinceLastSecond < 2000 && totalTimeSinceLastSecond > 0) {
     set_pin(RED_LED_2, true);
     set_pin(GREEN_LED_2, false);
     return;
   }
 
-  if (totalTimeSinceLastSecond < 4000 && !hasYellow) {
-    hasYellow = true;
+  if (totalTimeSinceLastSecond < 4000 && totalTimeSinceLastSecond > 2000) {
     set_pin(RED_LED_2, false);
     set_pin(YELLOW_LED_2, true);
     return;
   }
 
-  if (totalTimeSinceLastSecond < 6000 && !hasGreen) {
-    hasGreen = true;
+  if (totalTimeSinceLastSecond < 6000 && totalTimeSinceLastSecond > 4000) {
     set_pin(YELLOW_LED_2, false);
     set_pin(GREEN_LED_2, true);
     return;
   }
 
-  if (totalTimeSinceLastSecond < 7990) {
-    hasGreen = true;
+  if (totalTimeSinceLastSecond < 7990 && totalTimeSinceLastSecond > 6000) {
     set_pin(GREEN_LED_2, false);
     return;
   }
