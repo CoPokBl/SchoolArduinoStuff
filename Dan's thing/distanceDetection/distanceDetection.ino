@@ -1,6 +1,7 @@
 #include <Servo.h>
 
-float anlInp;
+float echo;
+float trig;
 float dgtOut;
 Servo piss;
 int angle;
@@ -10,6 +11,7 @@ int angDif;
 void setup() {
   pinMode(3, OUTPUT);
   pinMode(A0, INPUT);
+  pinMode(10, OUTPUT);
   Serial.begin(9600);
   angle = 0;
   piss.attach(3);
@@ -18,17 +20,22 @@ void setup() {
 }
 
 void loop() {
+  echo = analogRead(A0);
+  digitalWrite(10, HIGH);
+  digitalWrite(3, echo);
+  Serial.println(echo);
+  piss.write(angle);
+
+  //angle = echo / 1023 * 180;
+  
+  /*
+  // Auto
   if (angle >= 180) {
     swtch = true;
   }
   else if (angle <= 0) {
     swtch = false;
   }
-  
-  anlInp = analogRead(A0);
-  digitalWrite(3, anlInp);
-  Serial.println(anlInp, angle);
-  piss.write(angle);
   
   if (swtch == true) {
     angle -= angDif;
@@ -38,4 +45,5 @@ void loop() {
   }
   
   delay(300);
+  */
 }
