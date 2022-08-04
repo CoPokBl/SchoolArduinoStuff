@@ -9,9 +9,9 @@ bool swtch;
 int angDif;
   
 void setup() {
-  pinMode(3, OUTPUT);
-  pinMode(A0, INPUT);
-  pinMode(10, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(3, INPUT);
+  pinMode(2, OUTPUT);
   Serial.begin(9600);
   angle = 0;
   piss.attach(3);
@@ -20,12 +20,22 @@ void setup() {
 }
 
 void loop() {
-  echo = analogRead(A0);
-  digitalWrite(10, HIGH);
-  digitalWrite(3, echo);
+  echo = pulseIn(2, HIGH);
+   
+  digitalWrite(3, LOW);
+  delayMicroseconds(2);
+  digitalWrite(3, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(3, LOW);
+  
+  digitalWrite(5, echo);
   Serial.println(echo);
   piss.write(angle);
-
+  /*
+  Serial.println("Exit Code");
+  delay(1000);
+  exit(1);
+  */
   //angle = echo / 1023 * 180;
   
   /*
