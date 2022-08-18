@@ -14,6 +14,15 @@
 long duration; // variable for the duration of sound wave travel
 int distance; // variable for the distance measurement
 
+int console() {
+  if (distance > 300) {
+    return 0;
+  }
+  else {
+    return 300 - distance;
+  }
+}
+
 void setup() {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
@@ -39,14 +48,5 @@ void loop() {
   Serial.print(distance);
   Serial.println(" cm");
 
-  analogWrite(led, console);
-}
-
-int console() {
-  if (distance > 300) {
-    return 0;
-  }
-  else {
-    return 300 - distance;
-  }
+  analogWrite(led, distance);
 }
