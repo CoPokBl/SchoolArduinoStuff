@@ -1,16 +1,25 @@
-const int AIN1 = 12;
-const int AIN2 = 13;
-const int BIN1 = 9;
-const int BIN2 = 8;
-const int PWMA = 11;  
-const int PWMB = 10;
-int switchPin = 7;
+#define AIN1 12
+#define AIN2 13
+#define BIN1 9
+#define BIN2 8
+#define PWMA 11
+#define PWMB 10
+#define switchPin 7
+
+#define echoPin 2 // attach pin D2 Arduino to pin Echo of HC-SR04
+#define trigPin 3 //attach pin D3 Arduino to pin Trig of HC-SR04
+#define led 5
 
 int leftDrv = 0;
 int rightDrv = 0;
 
-int swtch = false;
+// Drive Demo Vars
+bool swtch = false;
 int x = 0;
+
+// Vars for Seeing
+long duration;
+int distance; 
 
 void setup() {
   pinMode(switchPin, INPUT_PULLUP);
@@ -22,15 +31,20 @@ void setup() {
   pinMode(PWMA, OUTPUT);
   pinMode(PWMB, OUTPUT);
 
-  Serial.begin(9600);                       //begin serial communication with the computer
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  pinMode(led, OUTPUT);
+
+  Serial.begin(9600);
 }
 
 void loop() {
+  // The Driving Code
   if (swtch == false) {
-    x += 1;
+    x += 2;
   }
   else if (swtch == true) {
-    x -= 1;
+    x -= 2;
   }
 
   if (x >= 350) {
@@ -43,27 +57,44 @@ void loop() {
   leftDrv = x;
   rightDrv = x;
 
-  if (digitalRead(7) == LOW) {          //if the switch is on...
+  if (digitalRead(7) == LOW) {
     spinMotor(leftDrv, rightDrv);
-  } else {                              //if the switch is off...
-    spinMotor(0, 0);                   //turn the motor off
+  } else {
+    spinMotor(0, 0);
   }
 
+  // The Seeing Code
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  // Displays the distance on the Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
 
+  analogWrite(led, distance);
 }
 
 void spinMotor(int leftDrv, int rightDrv) {
+  // Driving Function
   if (leftDrv > 0) {
     digitalWrite(AIN1, HIGH);
-    digitalWrite(AIN2, LOW);    
+    digitalWrite(AIN2, LOW);
   }
   else if (leftDrv < 0) {
     digitalWrite(AIN1, LOW);
-    digitalWrite(AIN2, HIGH); 
+    digitalWrite(AIN2, HIGH);
   }
   else {
     digitalWrite(AIN1, LOW);
-    digitalWrite(AIN2, LOW);         
+    digitalWrite(AIN2, LOW);
   }
   
   if (rightDrv > 0) {
@@ -79,6 +110,6 @@ void spinMotor(int leftDrv, int rightDrv) {
     digitalWrite(BIN2, LOW);
   }
   
-  analogWrite(PWMA, abs(leftDrv));  
+  analogWrite(PWMA, abs(leftDrv));
   analogWrite(PWMB, abs(rightDrv));
 }
