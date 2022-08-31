@@ -39,31 +39,7 @@ void setup() {
 }
 
 void loop() {
-  // The Driving Code
-  if (swtch == false) {
-    x += 2;
-  }
-  else if (swtch == true) {
-    x -= 2;
-  }
-
-  if (x >= 350) {
-    swtch = true;
-  }
-  else if (x <= -350) {
-    swtch = false;
-  }
-
-  leftDrv = x;
-  rightDrv = x;
-
-  if (digitalRead(7) == LOW) {
-    spinMotor(leftDrv, rightDrv);
-  } else {
-    spinMotor(0, 0);
-  }
-
-  // The Seeing Code
+   // The Seeing Code
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
@@ -75,11 +51,25 @@ void loop() {
   // Calculating the distance
   distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
   // Displays the distance on the Serial Monitor
-  Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println(" cm");
 
   analogWrite(led, distance);
+
+  if (distance > 15 || distance == 0) {
+    leftDrv = 250;
+    rightDrv = 250;
+  }
+  else {
+    leftDrv = 0;
+    rightDrv = 0;
+  }
+  
+  if (digitalRead(7) == LOW) {
+    spinMotor(leftDrv, rightDrv);
+  } else {
+    spinMotor(0, 0);
+  }
 }
 
 void spinMotor(int leftDrv, int rightDrv) {
@@ -102,7 +92,7 @@ void spinMotor(int leftDrv, int rightDrv) {
     digitalWrite(BIN2, LOW);
   }
   else if (rightDrv < 0) {
-    digitalWrite(BIN1, LOW)
+    digitalWrite(BIN1, LOW);
     digitalWrite(BIN2, HIGH);
   }
   else { 
